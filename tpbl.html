@@ -1,0 +1,1347 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="description" content="True PBL — project-based math learning, classroom games, and Geotopia adventures." />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <title>TruePBL by XDY</title>
+
+  <style>
+    :root {
+      --fade-to-black: 500ms;
+      --fade-from-black: 350ms;
+      --reveal-speed: 280ms;
+      --footer-height: 92px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+      overflow-x: hidden;
+      overflow-y: auto;
+      background: #000;
+    }
+
+    body {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+      overflow: visible;
+      background: #000;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #pageRoot {
+      width: 100%;
+      min-height: 100%;
+    }
+
+    button,
+    a { -webkit-tap-highlight-color: transparent; }
+
+    .site-page {
+      display: none;
+      width: 100%;
+      min-height: 100svh;
+      overflow: visible;
+      background: #000;
+    }
+
+    .site-page.active { display: block; }
+
+    .page-panel {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      background: #000;
+      isolation: isolate;
+    }
+
+    .stage {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .panel-art {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: fill;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .hotspot,
+    .reveal-card,
+    .video-button {
+      position: absolute;
+      z-index: 8;
+      display: block;
+      padding: 0;
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .hotspot:hover,
+    .hotspot:focus-visible,
+    .video-button:hover,
+    .video-button:focus-visible {
+      outline: 3px solid rgba(255, 255, 255, 0.88);
+      outline-offset: -3px;
+      background: rgba(255, 255, 255, 0.07);
+    }
+
+    /*
+      Visible Back to home button used on the first section of Pages 2–4.
+      "Geomini" is used when available, with safe fallbacks.
+    */
+    /*
+      Shared visible border for the top-left button on Pages 1–4.
+    */
+    .top-left-nav {
+      border: 2px solid rgba(128, 128, 128, 0.92) !important;
+      border-radius: 8px;
+    }
+
+    /*
+      Visible Back to home button used on the first section of Pages 2–4.
+      The text is black at 50% opacity.
+    */
+    .home-return {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #000;
+      font-family: "Geomini", "Gemini Light", "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+      font-size: clamp(10px, 0.78vw, 15px);
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: 0.01em;
+      text-align: center;
+      white-space: pre-line;
+    }
+
+    .home-return:hover,
+    .home-return:focus-visible {
+      color: #000;
+      outline: none;
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .show-hitboxes .hotspot,
+    .show-hitboxes .video-button,
+    .show-hitboxes .reveal-card {
+      outline: 3px solid #ff2d55 !important;
+      background: rgba(255, 45, 85, 0.14) !important;
+    }
+
+    .background-video {
+      position: absolute;
+      z-index: 4;
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      object-fit: contain;
+      background: transparent;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .inline-youtube {
+      position: absolute;
+      z-index: 5;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .inline-youtube iframe {
+      width: 100%;
+      height: 100%;
+      display: block;
+      border: 0;
+    }
+
+    .reveal-card { overflow: hidden; }
+
+    .reveal-card:focus-visible {
+      outline: 4px solid rgba(255, 255, 255, 0.94);
+      outline-offset: -4px;
+    }
+
+    .reveal-image {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+      opacity: 0;
+      transform: translateY(105%);
+      transition:
+        transform var(--reveal-speed) cubic-bezier(0.22, 0.85, 0.35, 1),
+        opacity 150ms ease-out;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .reveal-card:hover .reveal-image,
+    .reveal-card:focus-visible .reveal-image {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .site-footer {
+      min-height: var(--footer-height);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: #050505;
+      color: #fff;
+      text-align: center;
+      font-family: "Gemini Light", "Avenir Next", "Helvetica Neue", Arial, sans-serif;
+      font-size: clamp(16px, 1.25vw, 24px);
+      font-weight: 300;
+      letter-spacing: 0.02em;
+    }
+
+    .construction-page {
+      position: relative;
+      overflow: visible;
+      color: #fff;
+      background:
+        radial-gradient(circle at 25% 25%, rgba(255, 216, 104, 0.24), transparent 34%),
+        radial-gradient(circle at 75% 70%, rgba(115, 183, 255, 0.20), transparent 36%),
+        #090909;
+    }
+
+    .construction-content {
+      min-height: calc(100svh - var(--footer-height));
+      display: grid;
+      place-items: center;
+      padding: 28px;
+      text-align: center;
+    }
+
+    .construction-card {
+      width: min(760px, 92vw);
+      padding: clamp(32px, 6vw, 72px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 28px;
+      background: rgba(0, 0, 0, 0.58);
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.40);
+      backdrop-filter: blur(12px);
+    }
+
+    .construction-card h1 {
+      margin: 0 0 14px;
+      font-size: clamp(36px, 7vw, 82px);
+      line-height: 1;
+    }
+
+    .construction-card h2 {
+      margin: 0 0 14px;
+      color: #ffdd68;
+      font-size: clamp(20px, 3vw, 34px);
+      font-weight: 600;
+    }
+
+    .construction-card p {
+      max-width: 560px;
+      margin: 0 auto 28px;
+      color: rgba(255, 255, 255, 0.78);
+      font-size: clamp(16px, 2vw, 22px);
+      line-height: 1.55;
+    }
+
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 190px;
+      min-height: 54px;
+      padding: 14px 26px;
+      border: 0;
+      border-radius: 999px;
+      background: #ffdd68;
+      color: #111;
+      font: inherit;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .back-button:hover,
+    .back-button:focus-visible {
+      outline: none;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(255, 221, 104, 0.25);
+    }
+
+    #pageFade {
+      position: fixed;
+      inset: 0;
+      z-index: 9500;
+      background: #000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity var(--fade-from-black) ease;
+    }
+
+    #pageFade.fade-in {
+      opacity: 1;
+      pointer-events: all;
+      transition-duration: var(--fade-to-black);
+    }
+
+    #videoModal {
+      position: fixed;
+      inset: 0;
+      z-index: 9700;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 28px;
+      background: rgba(0, 0, 0, 0.70);
+    }
+
+    #videoModal.open { display: flex; }
+
+    .video-dialog {
+      position: relative;
+      width: min(960px, 86vw);
+      aspect-ratio: 16 / 9;
+      overflow: visible;
+      border-radius: 14px;
+      background: #000;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.58);
+    }
+
+    .video-dialog iframe {
+      width: 100%;
+      height: 100%;
+      display: block;
+      border: 0;
+      border-radius: 14px;
+      background: #000;
+    }
+
+    .video-close {
+      position: absolute;
+      top: -18px;
+      right: -18px;
+      width: 44px;
+      height: 44px;
+      border: 2px solid rgba(255, 255, 255, 0.68);
+      border-radius: 50%;
+      background: #111;
+      color: #fff;
+      font-size: 27px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    .video-close:hover,
+    .video-close:focus-visible {
+      background: #292929;
+      outline: 3px solid rgba(255, 255, 255, 0.88);
+    }
+
+    #rotatePrompt {
+      position: fixed;
+      inset: 0;
+      z-index: 9900;
+      display: none;
+      place-items: center;
+      padding: 30px;
+      background: #080808;
+      color: #fff;
+      text-align: center;
+    }
+
+    #rotatePrompt.show { display: grid; }
+
+    .rotate-message { max-width: 430px; }
+
+    .phone-icon {
+      position: relative;
+      width: 78px;
+      height: 126px;
+      margin: 0 auto 26px;
+      border: 5px solid #ffdd68;
+      border-radius: 14px;
+      animation: rotate-phone 1.8s ease-in-out infinite;
+    }
+
+    .phone-icon::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 8px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #ffdd68;
+      transform: translateX(-50%);
+    }
+
+    .rotate-message h2 {
+      margin: 0 0 12px;
+      font-size: clamp(28px, 8vw, 44px);
+    }
+
+    .rotate-message p {
+      margin: 0;
+      color: rgba(255, 255, 255, 0.78);
+      font-size: 18px;
+      line-height: 1.5;
+    }
+
+    @keyframes rotate-phone {
+      0%, 22%   { transform: rotate(0deg); }
+      60%, 100% { transform: rotate(90deg); }
+    }
+
+    @media (max-width: 700px) {
+      #videoModal { padding: 14px; }
+      .video-dialog { width: 94vw; }
+      .video-close { top: -13px; right: -8px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Add class="show-hitboxes" temporarily to test every clickable area. -->
+
+  <main id="pageRoot"></main>
+  <div id="pageFade" aria-hidden="true"></div>
+
+  <div id="videoModal" role="dialog" aria-modal="true" aria-label="Video player">
+    <div class="video-dialog">
+      <button class="video-close" id="videoClose" type="button" aria-label="Close video">×</button>
+      <iframe
+        id="modalVideoFrame"
+        title="True PBL video"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen>
+      </iframe>
+    </div>
+  </div>
+
+  <div id="rotatePrompt" role="dialog" aria-modal="true" aria-label="Rotate your phone">
+    <div class="rotate-message">
+      <div class="phone-icon" aria-hidden="true"></div>
+      <h2>Please rotate your phone</h2>
+      <p>True PBL is best viewed horizontally.</p>
+    </div>
+  </div>
+
+  <script>
+    "use strict";
+
+    const BASE = "https://daryeaye.github.io/website/";
+    const TPT_STORE = "https://www.teacherspayteachers.com/store/true-pbl";
+    const DEPLOYED_ORIGIN = "https://daryeaye.github.io";
+    const DEPLOYED_PAGE = "https://daryeaye.github.io/website/";
+    const COPYRIGHT = "© True PBL. Created by Xinlin Dwyane Ye. All rights reserved.";
+
+    const BOX_1 = { x: 573,  y: 334, w: 551, h: 100 };
+    const BOX_2 = { x: 1216, y: 334, w: 550, h: 100 };
+    const BOX_3 = { x: 573,  y: 887, w: 551, h: 100 };
+    const BOX_4 = { x: 1216, y: 887, w: 550, h: 100 };
+
+    const FINAL_BOX_5 = { x: 431,  y: 93,  w: 1060, h: 123 };
+    const FINAL_BOX_6 = { x: 94,   y: 288, w: 821,  h: 123 };
+    const FINAL_BOX_7 = { x: 1006, y: 288, w: 821,  h: 123 };
+    const FINAL_BOX_8 = { x: 94,   y: 484, w: 821,  h: 122 };
+    const FINAL_BOX_9 = { x: 1006, y: 484, w: 821,  h: 122 };
+
+    const SHARED_VIDEO_BOX = { x: 38, y: 255, w: 1012, h: 575 };
+
+    /*
+      Games-page button areas.
+      A/B are the two wide lower buttons.
+      C is the centered video button; D/E are the two lower product buttons.
+    */
+    const TOOL_BOX_A = { x: 179, y: 859, w: 717, h: 93 };
+    const TOOL_BOX_B = { x: 1012, y: 859, w: 716, h: 93 };
+    const TOOL_BOX_C = { x: 602, y: 785, w: 717, h: 93 };
+    const TOOL_BOX_D = { x: 181, y: 914, w: 717, h: 93 };
+    const TOOL_BOX_E = { x: 1020, y: 914, w: 717, h: 93 };
+
+    const pages = {
+      home: {
+        title: "True PBL",
+        sections: [
+          {
+            image: BASE + "p1.jpg",
+            hotspots: [
+              { x: 47, y: 73, w: 333, h: 100, url: TPT_STORE, label: "Open the True PBL Teachers Pay Teachers store" },
+              { x: 86, y: 727, w: 331, h: 62, route: "grade6", label: "Open Grade 6 Projects" },
+              { x: 489, y: 727, w: 330, h: 62, route: "grade7", label: "Open Grade 7 Projects" },
+              { x: 86, y: 838, w: 331, h: 61, route: "geotopia", label: "Open Geotopia" },
+              { x: 489, y: 838, w: 330, h: 61, route: "games", label: "Open Games and Tools" },
+              { x: 286, y: 948, w: 330, h: 61, route: "about", label: "Open About Me" }
+            ]
+          },
+          {
+            image: BASE + "p2.jpg",
+            loopingVideo: { ...SHARED_VIDEO_BOX, src: BASE + "loop.mp4" }
+          },
+          {
+            image: BASE + "p3.jpg",
+            hotspots: [
+              { x: 65, y: 873, w: 820, h: 123, route: "grade6", label: "Explore all Grade 6 projects" },
+              { x: 1027, y: 873, w: 821, h: 123, url: "https://www.teacherspayteachers.com/store/true-pbl/category-6th-grade-resources-1516434", label: "View Grade 6 resources on Teachers Pay Teachers" }
+            ],
+            reveals: [
+              { x: 65, y: 238, w: 532, h: 532, image: BASE + "f1.jpg", label: "Show Grade 6 project preview 1" },
+              { x: 691, y: 238, w: 532, h: 532, image: BASE + "f2.jpg", label: "Show Grade 6 project preview 2" },
+              { x: 1317, y: 238, w: 532, h: 532, image: BASE + "f3.jpg", label: "Show Grade 6 project preview 3" }
+            ]
+          },
+          {
+            image: BASE + "p4.jpg",
+            hotspots: [
+              { x: 65, y: 873, w: 820, h: 123, route: "grade7", label: "Explore all Grade 7 projects" },
+              { x: 1027, y: 873, w: 821, h: 123, url: "https://www.teacherspayteachers.com/store/true-pbl/category-7th-grade-resources-1294069", label: "View Grade 7 resources on Teachers Pay Teachers" }
+            ],
+            reveals: [
+              { x: 65, y: 238, w: 532, h: 532, image: BASE + "f4.jpg", label: "Show Grade 7 project preview 1" },
+              { x: 691, y: 238, w: 532, h: 532, image: BASE + "f5.jpg", label: "Show Grade 7 project preview 2" },
+              { x: 1317, y: 238, w: 532, h: 532, image: BASE + "f6.jpg", label: "Show Grade 7 project preview 3" }
+            ]
+          },
+          { image: BASE + "p5.jpg" },
+          { image: BASE + "p6.jpg" },
+          {
+            image: BASE + "p7.jpg",
+            hotspots: [
+              { x: 65, y: 860, w: 821, h: 135, route: "geotopia", label: "Explore Geotopia" },
+              { x: 1028, y: 860, w: 820, h: 135, url: "https://www.teacherspayteachers.com/store/true-pbl/category-geotopia-bundles-1602300", label: "View Geotopia bundles on Teachers Pay Teachers" }
+            ]
+          },
+          {
+            image: BASE + "p8.jpg",
+            hotspots: [
+              { x: 65, y: 873, w: 820, h: 123, route: "games", label: "Explore all games and tools" },
+              { x: 1027, y: 873, w: 821, h: 123, url: "https://www.teacherspayteachers.com/store/true-pbl/category-ultimate-engagement-pack-1365582", label: "View the Ultimate Engagement Pack on Teachers Pay Teachers" }
+            ],
+            reveals: [
+              { x: 65, y: 238, w: 532, h: 532, image: BASE + "f7.jpg", label: "Show game preview 1" },
+              { x: 691, y: 238, w: 532, h: 532, image: BASE + "f8.jpg", label: "Show game preview 2" },
+              { x: 1317, y: 238, w: 532, h: 532, image: BASE + "f9.jpg", label: "Show game preview 3" }
+            ]
+          }
+        ]
+      },
+
+      grade6: {
+        title: "Grade 6 Projects",
+        sections: [
+          {
+            image: BASE + "61.jpg",
+            hotspots: [
+              {
+                x: 1816, y: 12, w: 92, h: 64,
+                route: "home",
+                className: "home-return top-left-nav",
+                label: "Return to the homepage"
+              }
+            ]
+          },
+          {
+            image: BASE + "62.jpg",
+            hotspots: [
+              { ...BOX_1, drive: "https://drive.google.com/file/d/1BbJiG-F6sYNkWtGgbGkeAm3RYmCpiyze/view?usp=drive_link", label: "Play the fraction project video" },
+              { ...BOX_2, url: "https://www.teacherspayteachers.com/Product/6th-grade-Project-Multiply-Divide-Fractions-with-DiagramsDigital-Resource-PBL-14541263", label: "View the fraction project on Teachers Pay Teachers" },
+              { ...BOX_3, drive: "https://drive.google.com/file/d/1mBrIdRaaYcgHZagvzjls4J-R70jwmeCi/view?usp=drive_link", label: "Play the coordinate reflection project video" },
+              { ...BOX_4, url: "https://www.teacherspayteachers.com/Product/6th-grade-Project-Coordinate-Points-Reflection-Halloween-Digital-Resource-PBL-14706709", label: "View the coordinate reflection project on Teachers Pay Teachers" }
+            ]
+          },
+          {
+            image: BASE + "63.jpg",
+            hotspots: [
+              { ...BOX_1, drive: "https://drive.google.com/file/d/1EgvA1iRTPpA3Tc2MsiYm6_Mr-jCDXV9M/view?usp=drive_link", label: "Play the Dream Room project video" },
+              { ...BOX_2, url: "https://www.teacherspayteachers.com/Product/6th-grade-Project-Combine-Like-Term-Distributive-PropertyDigital-Resource-PBL-14920870", label: "View the Dream Room project on Teachers Pay Teachers" },
+              { ...BOX_3, drive: "https://drive.google.com/file/d/1LwspIHeNr-b6kohpFEmE1DSmyQqDQd5k/view?usp=drive_link", label: "Play the equation and inequality project video" },
+              { ...BOX_4, url: "https://www.teacherspayteachers.com/Product/6th-grade-Project-Equation-Inequality-Gallery-Walk-Bingo-Digital-Resource-PBL-15244849", label: "View the equation and inequality project on Teachers Pay Teachers" }
+            ]
+          },
+          {
+            image: BASE + "64.jpg",
+            hotspots: [
+              { ...BOX_1, drive: "https://drive.google.com/file/d/1eVFtn50W1yxXoV7XGFTNX3ksfsR2p-PW/view?usp=drive_link", label: "Play the rate and ratio project video" },
+              { ...BOX_2, url: "https://www.teacherspayteachers.com/Product/6th-grade-Project-Unit-Rate-Ratio-Table-Graph-Activity-PBL-Digital-Resource-15445952", label: "View the rate and ratio project on Teachers Pay Teachers" },
+              { ...BOX_3, drive: "https://drive.google.com/file/d/1BwuXtrZ2FzCMgk-BZg8yUhSzeYfGiRIj/view?usp=drive_link", label: "Play the America Percent Tour video" },
+              { ...BOX_4, url: "https://www.teacherspayteachers.com/Product/6th-Grade-Project-Percent-Proportion-USA-States-Fun-FactsDigital-Resource-PBL-16455601", label: "View America Percent Tour on Teachers Pay Teachers" }
+            ]
+          },
+          {
+            image: BASE + "65.jpg",
+            hotspots: [
+              { ...BOX_1, route: "geotopia", label: "Open the Geotopia page" },
+              { ...BOX_2, url: "https://www.teacherspayteachers.com/Product/6th-Grade-Geometry-Project-Bundle-Polygon-Prism-PyramidDigital-Resource-PBL-16496367", label: "View the Grade 6 geometry bundle on Teachers Pay Teachers" },
+              { ...BOX_3, drive: "https://drive.google.com/file/d/1eXVJXIxmaYaObZ-DKFPm9dTd7T960I-O/view?usp=drive_link", label: "Play the statistics and probability project video" },
+              { ...BOX_4, url: "https://www.teacherspayteachers.com/Product/6th-Grade-Project-Statistics-and-Probability-Dot-Box-PlotDigital-Resource-PBL-16680557", label: "View the statistics and probability project on Teachers Pay Teachers" }
+            ]
+          },
+          {
+            image: BASE + "66.jpg",
+            hotspots: [
+              { ...FINAL_BOX_5, url: "https://www.teacherspayteachers.com/Product/6th-Grade-Math-PBL-Project-Game-Bundle-Digital-Resource-PBL-Google-Classroom-16881544", label: "View the complete Grade 6 bundle" },
+              { ...FINAL_BOX_6, route: "games", label: "Open Games and Tools" },
+              { ...FINAL_BOX_7, route: "grade7", label: "Open Grade 7 Projects" },
+              { ...FINAL_BOX_8, route: "about", label: "Open About Me" },
+              { ...FINAL_BOX_9, route: "home", label: "Return to the homepage" }
+            ]
+          }
+        ]
+      },
+
+      grade7: {
+        title: "Grade 7 Projects",
+        sections: [
+          {
+            image: BASE + "71.jpg",
+            hotspots: [
+              {
+                x: 1816, y: 12, w: 92, h: 64,
+                route: "home",
+                className: "home-return top-left-nav",
+                label: "Return to the homepage"
+              }
+            ]
+          },
+          {
+            image: BASE + "72.jpg",
+            hotspots: [
+              { ...BOX_1, drive: "https://drive.google.com/file/d/1cFnXLIitshizfPBs7FS6y2KlAz69lbZ7/view?usp=drive_link", label: "Play the integer story project video" },
+              { ...BOX_2, url: "https://www.teacherspayteachers.com/Product/7th-Grade-Project-Integer-Rational-Number-Comic-GalleryDigital-Resource-PBL-12255258", label: "View the integer story project on Teachers Pay Teachers" },
+              { ...BOX_3, drive: "https://drive.google.com/file/d/1OwW3k0y8jjQ-kyc7ch-R38oDZbIoCJNh/view?usp=drive_link", label: "Play the proportional relationship project video" },
+              { ...BOX_4, url: "https://www.teacherspayteachers.com/Product/7th-Grade-Project-Proportional-Relationship-Unit-RateDigital-Resource-PBL-12712188", label: "View the proportional relationship project on Teachers Pay Teachers" }
+            ]
+          },
+          {
+            image: BASE + "73.jpg",
+            hotspots: [
+              { ...BOX_1, drive: "https://drive.google.com/file/d/1fdr9yAyy7J6E6LxHXWvYulKMV33W6aAn/view?usp=drive_link", label: "Play the percent project video" },
+              { ...BOX_2, url: "https://www.teacherspayteachers.com/Product/7th-Grade-Project-Percent-Increase-Decrease-Markup-downDigital-Resource-PBL-12989557", label: "View the percent project on Teachers Pay Teachers" },
+              { ...BOX_3, drive: "https://drive.google.com/file/d/17g6DynAmo3wJ0zth9-jAx81-KyGJL0DP/view?usp=drive_link", label: "Play the expressions playground project video" },
+              { ...BOX_4, url: "https://www.teacherspayteachers.com/Product/7th-Grade-Project-Distributive-Property-Terms-ExpressionsDigital-Resource-PBL-12381807", label: "View the expressions playground project on Teachers Pay Teachers" }
+            ]
+          },
+          {
+            image: BASE + "74.jpg",
+            hotspots: [
+              { ...BOX_1, drive: "https://drive.google.com/file/d/1DVdx_mHXrYTyuvanfuGf5RNcj7UefgGR/view?usp=drive_link", label: "Play the equation calendar project video" },
+              { ...BOX_2, url: "https://www.teacherspayteachers.com/Product/7th-Grade-Project-Create-Solve-Equation-Monthly-CalendarDigital-Resource-PBL-12560703", label: "View the equation calendar project on Teachers Pay Teachers" },
+              { ...BOX_3, drive: "https://drive.google.com/file/d/1wTo4DvObvbCbpVt3RIXtuK2-4txczFLD/view?usp=drive_link", label: "Play the statistics project video" },
+              { ...BOX_4, url: "https://www.teacherspayteachers.com/Product/7th-Grade-Project-Statistics-Mean-Median-Mode-Box-PlotDigital-Resource-PBL-13156166", label: "View the statistics project on Teachers Pay Teachers" }
+            ]
+          },
+          {
+            image: BASE + "75.jpg",
+            hotspots: [
+              { ...BOX_1, drive: "https://drive.google.com/file/d/1ExgszE3q3sZz0XspqBu0WLPA4dhWmxRL/view?usp=drive_link", label: "Play the probability project video" },
+              { ...BOX_2, url: "https://www.teacherspayteachers.com/Product/7th-Grade-Project-Simple-Compound-Probability-SampleSpaceDigital-Resource-PBL-13354135", label: "View the probability project on Teachers Pay Teachers" },
+              { ...BOX_3, route: "geotopia", label: "Open the Geotopia page" },
+              { ...BOX_4, url: "https://www.teacherspayteachers.com/Product/7th-Grade-Geometry-Project-Bundle-Polygon-Prism-PyramidDigital-Resource-PBL-11961954", label: "View the Grade 7 geometry bundle on Teachers Pay Teachers" }
+            ]
+          },
+          {
+            image: BASE + "76.jpg",
+            hotspots: [
+              { ...FINAL_BOX_5, url: "https://www.teacherspayteachers.com/Product/7th-Grade-Math-PBL-Project-Game-Bundle-Digital-Resource-PBL-Google-Classroom-15325770", label: "View the complete Grade 7 bundle" },
+              { ...FINAL_BOX_6, route: "games", label: "Open Games and Tools" },
+              { ...FINAL_BOX_7, route: "grade6", label: "Open Grade 6 Projects" },
+              { ...FINAL_BOX_8, route: "about", label: "Open About Me" },
+              { ...FINAL_BOX_9, route: "home", label: "Return to the homepage" }
+            ]
+          }
+        ]
+      },
+
+      geotopia: {
+        title: "Geotopia",
+        sections: [
+          {
+            image: BASE + "g1.jpg",
+            hotspots: [
+              {
+                x: 1816, y: 12, w: 92, h: 64,
+                route: "home",
+                className: "home-return top-left-nav",
+                label: "Return to the homepage"
+              }
+            ]
+          },
+          {
+            image: BASE + "g2.jpg",
+            inlineDrive: { ...SHARED_VIDEO_BOX, drive: "https://drive.google.com/file/d/1MxWwMr0lulxmR1KvJSc6bssHsjAQvhkn/view?usp=drive_link" },
+            hotspots: [
+              { x: 435, y: 929, w: 1059, h: 122, url: "https://www.teacherspayteachers.com/Product/7th-Grade-Geometry-Project-Bundle-Polygon-Prism-PyramidDigital-Resource-PBL-11961954", label: "View the Geotopia bundle on Teachers Pay Teachers" }
+            ]
+          },
+          {
+            image: BASE + "g3.jpg",
+            hotspots: [
+              { x: 569, y: 46, w: 285, h: 162, url: "https://www.teacherspayteachers.com/Product/6th-Grade-Project-Area-Triangle-Trapezoid-ParallelogramDigital-Resource-PBL-16264006", label: "View Geotopia Grade 6 project 1" },
+              { x: 118, y: 380, w: 284, h: 162, url: "https://www.teacherspayteachers.com/Product/6th-Grade-Project-Polygon-Area-Composite-Figure-TrapezoidDigital-Resource-PBL-16282515", label: "View Geotopia Grade 6 project 2" },
+              { x: 1506, y: 505, w: 284, h: 162, url: "https://www.teacherspayteachers.com/Product/6th-Grade-Project-Polygon-Coordinate-Plane-Prism-PyramidDigital-Resource-PBL-16306148", label: "View Geotopia Grade 6 project 3" },
+              { x: 1103, y: 863, w: 284, h: 162, url: "https://www.teacherspayteachers.com/Product/6th-Grade-Project-Volume-Surface-Area-Prism-Pyramid-CubeDigital-Resource-PBL-16336064", label: "View Geotopia Grade 6 project 4" },
+              { x: 1505, y: 861, w: 284, h: 162, url: "https://www.teacherspayteachers.com/Product/6th-Grade-Geometry-Assessment-for-Polygon-Prism-PyramidDigital-Resource-PBL-16464740", label: "View the Geotopia Grade 6 assessment" }
+            ]
+          },
+          {
+            image: BASE + "g4.jpg",
+            inlineDrive: { ...SHARED_VIDEO_BOX, drive: "https://drive.google.com/file/d/1nkfqdOgbe6z-aTNQv0JI3z95IOy3BDXU/view?usp=drive_link" },
+            hotspots: [
+              { x: 435, y: 929, w: 1059, h: 122, url: "https://www.teacherspayteachers.com/Product/7th-Grade-Geometry-Project-Bundle-Polygon-Prism-PyramidDigital-Resource-PBL-11961954", label: "View the Geotopia Grade 7 bundle on Teachers Pay Teachers" }
+            ]
+          },
+          {
+            image: BASE + "g5.jpg",
+            hotspots: [
+              { x: 473, y: 89, w: 284, h: 162, url: "https://www.teacherspayteachers.com/Product/Perimeter-and-Area-of-Polygons-Composite-Figures-ProjectDigital-Resource-PBL-11759246", label: "View Geotopia Grade 7 project A" },
+              { x: 131, y: 398, w: 284, h: 162, url: "https://www.teacherspayteachers.com/Product/Triangle-Inequality-Angle-Sum-Hands-on-Exploration-ProjectDigital-Resource-PBL-11851066", label: "View Geotopia Grade 7 project B" },
+              { x: 447, y: 840, w: 284, h: 162, url: "https://www.teacherspayteachers.com/Product/Vertical-Supplementary-Complementary-Angle-RelationshipsDigital-Resource-PBL-11851793", label: "View Geotopia Grade 7 project C" },
+              { x: 863, y: 840, w: 284, h: 162, url: "https://www.teacherspayteachers.com/Product/Circumference-Area-of-Circle-w-Pizza-Explanation-GeometryDigital-Resource-PBL-11857769", label: "View Geotopia Grade 7 project D" },
+              { x: 908, y: 80, w: 284, h: 162, url: "https://www.teacherspayteachers.com/Product/Volume-Surface-Area-of-Rectangular-Prisms-Cubes-Project-Digital-Resource-PBL-11862962", label: "View Geotopia Grade 7 project E" },
+              { x: 1491, y: 246, w: 284, h: 162, url: "https://www.teacherspayteachers.com/Product/Triangular-Prisms-Square-Pyramids-Surface-Area-and-Volume-Digital-Resource-PBL-11922692", label: "View Geotopia Grade 7 project F" },
+              { x: 1469, y: 671, w: 284, h: 162, url: "https://www.teacherspayteachers.com/Product/7th-Grade-Geometry-Polygon-Polyhedron-Story-problem-Set-Digital-Resource-PBL-11950632", label: "View Geotopia Grade 7 project G" }
+            ]
+          },
+          { image: BASE + "g6.jpg" },
+          {
+            image: BASE + "g7.jpg",
+            hotspots: [
+              { x: 292, y: 675, w: 625, h: 92, route: "grade6", label: "Open Grade 6 Projects" },
+              { x: 1005, y: 677, w: 625, h: 93, route: "grade7", label: "Open Grade 7 Projects" },
+              { x: 292, y: 799, w: 625, h: 92, route: "games", label: "Open Games and Tools" },
+              { x: 1005, y: 801, w: 625, h: 93, route: "about", label: "Open About Me" },
+              { x: 653, y: 926, w: 626, h: 92, route: "home", label: "Return to the homepage" }
+            ]
+          }
+        ]
+      },
+
+      games: {
+        title: "Games and Tools",
+        sections: [
+          {
+            image: BASE + "t1.jpg",
+            hotspots: [
+              {
+                x: 1816, y: 12, w: 92, h: 64,
+                route: "home",
+                className: "home-return top-left-nav",
+                label: "Return to the homepage"
+              }
+            ]
+          },
+          {
+            image: BASE + "t2.jpg",
+            hotspots: [
+              {
+                ...TOOL_BOX_A,
+                url: "https://www.teacherspayteachers.com/Product/G6-Math-Jeopardy-Fraction-Decimal-Percent-Operation-Equation-Expression-16531845",
+                label: "View the Grade 6 Jeopardy game on Teachers Pay Teachers"
+              },
+              {
+                ...TOOL_BOX_B,
+                url: "https://www.teacherspayteachers.com/Product/G7-Math-Jeopardy-Expressions-Equations-Rates-Percent-Statistics-Probabilities-15578686",
+                label: "View the Grade 7 Jeopardy game on Teachers Pay Teachers"
+              }
+            ]
+          },
+          {
+            image: BASE + "t3.jpg",
+            hotspots: [
+              {
+                ...TOOL_BOX_C,
+                drive: "https://drive.google.com/file/d/1VLI2fDgaENJkoqlvEWgSaGQrBGGqRk1l/view?usp=drive_link",
+                label: "Play the Boards Up game video"
+              },
+              {
+                ...TOOL_BOX_D,
+                url: "https://www.teacherspayteachers.com/Product/G6-Math-Boards-Up-Fraction-Decimal-Expression-Equation-Rates-Percent-Statistics-16717464",
+                label: "View Grade 6 Boards Up on Teachers Pay Teachers"
+              },
+              {
+                ...TOOL_BOX_E,
+                url: "https://www.teacherspayteachers.com/Product/G7-Math-Boards-Up-Expressions-Equations-Rates-Percent-Statistics-Probabilities-12935558",
+                label: "View Grade 7 Boards Up on Teachers Pay Teachers"
+              }
+            ]
+          },
+          {
+            image: BASE + "t4.jpg",
+            hotspots: [
+              {
+                ...TOOL_BOX_C,
+                drive: "https://drive.google.com/file/d/1KjILVGMGfiupm5Ph0VEn-oM-NPxhfI7h/view?usp=drive_link",
+                label: "Play the Tic-Tac-Toe game video"
+              },
+              {
+                ...TOOL_BOX_D,
+                url: "https://www.teacherspayteachers.com/Product/G6-Math-Tic-Tac-Toe-Fraction-Decimal-Expression-Equation-Rate-Percent-Statistics-16775467",
+                label: "View Grade 6 Tic-Tac-Toe on Teachers Pay Teachers"
+              },
+              {
+                ...TOOL_BOX_E,
+                url: "https://www.teacherspayteachers.com/Product/G7-Math-Tic-Tac-Toe-Proportional-Relationship-Equations-Expressions-Statistics-16843927",
+                label: "View Grade 7 Tic-Tac-Toe on Teachers Pay Teachers"
+              }
+            ]
+          },
+          {
+            image: BASE + "t5.jpg",
+            hotspots: [
+              {
+                ...TOOL_BOX_A,
+                drive: "https://drive.google.com/file/d/1FykQ2uRnktVYpuXza0Bka3sbrllpqNqM/view?usp=drive_link",
+                label: "Play the Among Us classroom game video"
+              },
+              {
+                ...TOOL_BOX_B,
+                url: "https://www.teacherspayteachers.com/Product/Among-Us-Game-Review-Any-Vocabulary-for-Any-Holiday-BreakDigital-Resource-Web-12473149",
+                label: "View the Among Us classroom game on Teachers Pay Teachers"
+              }
+            ]
+          },
+          {
+            image: BASE + "t6.jpg",
+            hotspots: [
+              {
+                ...TOOL_BOX_A,
+                drive: "https://drive.google.com/file/d/1vzDhHzbljdTaIXIDhAvjEszdzLrmaa1R/view?usp=drive_link",
+                label: "Play the digital sticker collection video"
+              },
+              {
+                ...TOOL_BOX_B,
+                url: "https://www.teacherspayteachers.com/Product/Digital-Sticker-Collection-24-Cute-Sticker-Reward-System-Motivation-Management-13091877",
+                label: "View the digital sticker collection on Teachers Pay Teachers"
+              }
+            ]
+          },
+          {
+            image: BASE + "t7.jpg",
+            hotspots: [
+              {
+                ...FINAL_BOX_5,
+                url: "https://www.teacherspayteachers.com/store/true-pbl/category-small-math-tools-1413549",
+                label: "View small math tools on Teachers Pay Teachers"
+              },
+              {
+                ...FINAL_BOX_6,
+                route: "grade6",
+                label: "Open Grade 6 Projects"
+              },
+              {
+                ...FINAL_BOX_7,
+                route: "grade7",
+                label: "Open Grade 7 Projects"
+              },
+              {
+                ...FINAL_BOX_8,
+                route: "geotopia",
+                label: "Open Geotopia"
+              },
+              {
+                ...FINAL_BOX_9,
+                route: "home",
+                label: "Return to the homepage"
+              }
+            ]
+          }
+        ]
+      },
+      about: {
+        title: "About Me",
+        sections: [
+          {
+            image: BASE + "a1.jpg",
+            hotspots: [
+              {
+                x: 1816, y: 12, w: 92, h: 64,
+                route: "home",
+                className: "home-return top-left-nav",
+                label: "Return to the homepage"
+              }
+            ]
+          },
+          {
+            image: BASE + "a2.jpg"
+          },
+          {
+            image: BASE + "a3.jpg"
+          },
+          {
+            image: BASE + "a4.jpg",
+            hotspots: [
+              {
+                x: 292, y: 675, w: 625, h: 92,
+                route: "grade6",
+                label: "Open Grade 6 Projects"
+              },
+              {
+                x: 1005, y: 677, w: 625, h: 93,
+                route: "grade7",
+                label: "Open Grade 7 Projects"
+              },
+              {
+                x: 292, y: 799, w: 625, h: 92,
+                route: "games",
+                label: "Open Games and Tools"
+              },
+              {
+                x: 1005, y: 801, w: 625, h: 93,
+                route: "geotopia",
+                label: "Open Geotopia"
+              },
+              {
+                x: 653, y: 926, w: 626, h: 92,
+                route: "home",
+                label: "Return to the homepage"
+              }
+            ]
+          }
+        ]
+      }
+    };
+
+    const pageRoot = document.getElementById("pageRoot");
+    const pageFade = document.getElementById("pageFade");
+    const videoModal = document.getElementById("videoModal");
+    const modalVideoFrame = document.getElementById("modalVideoFrame");
+    const videoClose = document.getElementById("videoClose");
+    const rotatePrompt = document.getElementById("rotatePrompt");
+
+    let currentRoute = null;
+    let transitionRunning = false;
+    let videoObserver = null;
+
+    function percent(value, total) {
+      return `${(value / total) * 100}%`;
+    }
+
+    function place(element, box) {
+      element.style.left = percent(box.x, 1920);
+      element.style.top = percent(box.y, 1080);
+      element.style.width = percent(box.w, 1920);
+      element.style.height = percent(box.h, 1080);
+    }
+
+    function extractYouTubeData(url) {
+      try {
+        const parsed = new URL(url);
+        let id = "";
+
+        if (parsed.hostname.includes("youtu.be")) {
+          id = parsed.pathname.replace("/", "");
+        } else if (parsed.pathname.startsWith("/embed/")) {
+          id = parsed.pathname.split("/embed/")[1].split("/")[0];
+        } else {
+          id = parsed.searchParams.get("v") || "";
+        }
+
+        let start = 0;
+        const startParam = parsed.searchParams.get("start");
+        const timeParam = parsed.searchParams.get("t");
+
+        if (startParam) {
+          start = Number.parseInt(startParam, 10) || 0;
+        } else if (timeParam) {
+          if (/^\d+$/.test(timeParam)) {
+            start = Number.parseInt(timeParam, 10);
+          } else {
+            const hours = Number.parseInt((timeParam.match(/(\d+)h/) || [0, 0])[1], 10);
+            const minutes = Number.parseInt((timeParam.match(/(\d+)m/) || [0, 0])[1], 10);
+            const seconds = Number.parseInt((timeParam.match(/(\d+)s/) || [0, 0])[1], 10);
+            start = hours * 3600 + minutes * 60 + seconds;
+          }
+        }
+
+        return { id, start };
+      } catch {
+        return { id: "", start: 0 };
+      }
+    }
+
+    function youtubeEmbedUrl(url, autoplay = false) {
+      const { id, start } = extractYouTubeData(url);
+
+      /*
+        Error 153 is caused when YouTube cannot identify the embedding client.
+        When the site is online, use the actual site origin and page URL.
+        During a downloaded file preview, identify the future GitHub Pages site.
+      */
+      const isOnlinePage = /^https?:$/.test(window.location.protocol);
+      const playerOrigin = isOnlinePage ? window.location.origin : DEPLOYED_ORIGIN;
+      const widgetReferrer = isOnlinePage
+        ? window.location.href.split("#")[0]
+        : DEPLOYED_PAGE;
+
+      const params = new URLSearchParams({
+        rel: "0",
+        playsinline: "1",
+        enablejsapi: "1",
+        origin: playerOrigin,
+        widget_referrer: widgetReferrer
+      });
+
+      if (autoplay) params.set("autoplay", "1");
+      if (start > 0) params.set("start", String(start));
+
+      return `https://www.youtube.com/embed/${id}?${params.toString()}`;
+    }
+
+    function googleDriveFileId(url) {
+      const match = String(url).match(/\/file\/d\/([^/]+)/);
+      return match ? match[1] : "";
+    }
+
+    function googleDriveEmbedUrl(url) {
+      const fileId = googleDriveFileId(url);
+      return `https://drive.google.com/file/d/${fileId}/preview`;
+    }
+
+    function modalEmbedUrl(url) {
+      return String(url).includes("drive.google.com")
+        ? googleDriveEmbedUrl(url)
+        : youtubeEmbedUrl(url, true);
+    }
+
+    function createHotspot(item) {
+      let element;
+
+      if (item.drive || item.youtube) {
+        element = document.createElement("button");
+        element.type = "button";
+        element.className = "video-button";
+        element.addEventListener("click", () => openVideoModal(item.drive || item.youtube));
+      } else {
+        element = document.createElement("a");
+        element.className = "hotspot";
+
+        if (item.url) {
+          element.href = item.url;
+          element.target = "_blank";
+          element.rel = "noopener noreferrer";
+        } else if (item.route) {
+          element.href = `#${item.route}`;
+          element.addEventListener("click", (event) => {
+            event.preventDefault();
+            navigateTo(item.route, true);
+          });
+        }
+      }
+
+      if (item.className) {
+        item.className
+          .split(/\s+/)
+          .filter(Boolean)
+          .forEach((className) => element.classList.add(className));
+      }
+
+      if (item.text) {
+        element.textContent = item.text;
+      }
+
+      element.setAttribute("aria-label", item.label || "Open link");
+      place(element, item);
+      return element;
+    }
+
+    function createReveal(item) {
+      const card = document.createElement("button");
+      card.type = "button";
+      card.className = "reveal-card";
+      card.setAttribute("aria-label", item.label || "Show preview");
+      place(card, item);
+
+      const image = document.createElement("img");
+      image.className = "reveal-image";
+      image.src = item.image;
+      image.alt = "";
+      image.draggable = false;
+      image.loading = "lazy";
+      card.appendChild(image);
+
+      card.addEventListener("click", (event) => event.preventDefault());
+      card.addEventListener("pointerleave", () => card.blur());
+      return card;
+    }
+
+    function createSection(section, sectionIndex, pageName) {
+      const panel = document.createElement("section");
+      panel.className = "page-panel";
+      panel.setAttribute("aria-label", `${pageName} section ${sectionIndex + 1}`);
+
+      const stage = document.createElement("div");
+      stage.className = "stage";
+
+      const art = document.createElement("img");
+      art.className = "panel-art";
+      art.src = section.image;
+      art.alt = `${pageName} section ${sectionIndex + 1}`;
+      art.draggable = false;
+      art.loading = sectionIndex < 2 ? "eager" : "lazy";
+      if (sectionIndex === 0) art.fetchPriority = "high";
+      stage.appendChild(art);
+
+      if (section.loopingVideo) {
+        const video = document.createElement("video");
+        video.className = "background-video";
+        video.src = section.loopingVideo.src;
+        video.autoplay = true;
+        video.muted = true;
+        video.loop = true;
+        video.playsInline = true;
+        video.preload = "metadata";
+        video.disablePictureInPicture = true;
+        video.setAttribute("controlsList", "nodownload nofullscreen noplaybackrate");
+        video.setAttribute("aria-hidden", "true");
+        video.tabIndex = -1;
+        place(video, section.loopingVideo);
+        stage.appendChild(video);
+      }
+
+      const inlinePlayer = section.inlineDrive || section.inlineYoutube;
+
+      if (inlinePlayer) {
+        const playerWindow = document.createElement("div");
+        playerWindow.className = "inline-youtube";
+        place(playerWindow, inlinePlayer);
+
+        const iframe = document.createElement("iframe");
+        iframe.src = section.inlineDrive
+          ? googleDriveEmbedUrl(inlinePlayer.drive)
+          : youtubeEmbedUrl(inlinePlayer.youtube, false);
+        iframe.title = `${pageName} video`;
+        iframe.loading = "lazy";
+        iframe.referrerPolicy = "strict-origin-when-cross-origin";
+        iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+        iframe.allowFullscreen = true;
+        playerWindow.appendChild(iframe);
+        stage.appendChild(playerWindow);
+      }
+
+      (section.reveals || []).forEach((item) => stage.appendChild(createReveal(item)));
+      (section.hotspots || []).forEach((item) => stage.appendChild(createHotspot(item)));
+
+      panel.appendChild(stage);
+      return panel;
+    }
+
+    function createConstructionPage(route, definition) {
+      const page = document.createElement("section");
+      page.className = "site-page construction-page";
+      page.dataset.route = route;
+
+      const wrapper = document.createElement("div");
+      wrapper.className = "construction-content";
+
+      const card = document.createElement("div");
+      card.className = "construction-card";
+      card.innerHTML = `
+        <h2>${definition.title}</h2>
+        <h1>Under Construction</h1>
+        <p>This section is being built and will be available soon.</p>
+      `;
+
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "back-button";
+      button.textContent = "Back to Homepage";
+      button.addEventListener("click", () => navigateTo("home", true));
+      card.appendChild(button);
+
+      wrapper.appendChild(card);
+      page.appendChild(wrapper);
+
+      const footer = document.createElement("footer");
+      footer.className = "site-footer";
+      footer.textContent = COPYRIGHT;
+      page.appendChild(footer);
+
+      return page;
+    }
+
+    function createPage(route, definition) {
+      if (definition.construction) return createConstructionPage(route, definition);
+
+      const page = document.createElement("section");
+      page.className = "site-page";
+      page.dataset.route = route;
+      page.setAttribute("aria-label", definition.title);
+
+      definition.sections.forEach((section, index) => {
+        page.appendChild(createSection(section, index, definition.title));
+      });
+
+      const footer = document.createElement("footer");
+      footer.className = "site-footer";
+      footer.textContent = COPYRIGHT;
+      page.appendChild(footer);
+      return page;
+    }
+
+    Object.entries(pages).forEach(([route, definition]) => {
+      pageRoot.appendChild(createPage(route, definition));
+    });
+
+    function getPageElement(route) {
+      return document.querySelector(`.site-page[data-route="${route}"]`);
+    }
+
+    function closeVideoModal() {
+      if (!videoModal.classList.contains("open")) return;
+      videoModal.classList.remove("open");
+      modalVideoFrame.src = "";
+      document.body.style.overflow = "";
+    }
+
+    function observeLoopingVideos() {
+      if (videoObserver) videoObserver.disconnect();
+
+      videoObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            const video = entry.target;
+            if (entry.isIntersecting) video.play().catch(() => {});
+            else video.pause();
+          });
+        },
+        { threshold: 0.20 }
+      );
+
+      document.querySelectorAll(".site-page.active .background-video").forEach((video) => {
+        videoObserver.observe(video);
+      });
+    }
+
+    function showRoute(route) {
+      const validRoute = pages[route] ? route : "home";
+
+      document.querySelectorAll(".site-page").forEach((page) => {
+        page.classList.toggle("active", page.dataset.route === validRoute);
+      });
+
+      currentRoute = validRoute;
+      document.title =
+        validRoute === "home"
+          ? "TruePBL by XDY"
+          : `${pages[validRoute].title} | TruePBL by XDY`;
+
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+
+      closeVideoModal();
+      observeLoopingVideos();
+    }
+
+    function wait(milliseconds) {
+      return new Promise((resolve) => setTimeout(resolve, milliseconds));
+    }
+
+    function safelyUpdateHistory(route, pushHistory) {
+      /*
+        Local file previews and some sandboxed editors treat file: pages as
+        unique security origins. Avoiding History API writes there prevents
+        the unsafe file-URL warning. GitHub Pages still gets normal hashes.
+      */
+      if (!pushHistory || !/^https?:$/.test(window.location.protocol)) return;
+      history.pushState({ route }, "", `#${route}`);
+    }
+
+    async function navigateTo(route, pushHistory) {
+      const validRoute = pages[route] ? route : "home";
+      if (transitionRunning) return;
+
+      if (validRoute === currentRoute) {
+        window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+        return;
+      }
+
+      transitionRunning = true;
+      pageFade.classList.add("fade-in");
+      await wait(500);
+
+      showRoute(validRoute);
+      safelyUpdateHistory(validRoute, pushHistory);
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => pageFade.classList.remove("fade-in"));
+      });
+
+      await wait(375);
+      transitionRunning = false;
+    }
+
+    function initialRoute() {
+      const hashRoute = location.hash.replace("#", "").trim();
+      return pages[hashRoute] ? hashRoute : "home";
+    }
+
+    window.addEventListener("popstate", () => navigateTo(initialRoute(), false));
+    showRoute(initialRoute());
+
+    function openVideoModal(videoUrl) {
+      modalVideoFrame.src = modalEmbedUrl(videoUrl);
+      videoModal.classList.add("open");
+      document.body.style.overflow = "hidden";
+      videoClose.focus();
+    }
+
+    videoClose.addEventListener("click", closeVideoModal);
+    videoModal.addEventListener("click", (event) => {
+      if (event.target === videoModal) closeVideoModal();
+    });
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeVideoModal();
+    });
+
+    function isLikelyPhone() {
+      if (navigator.userAgentData && typeof navigator.userAgentData.mobile === "boolean") {
+        return navigator.userAgentData.mobile;
+      }
+      return /Android|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+
+    function updateRotatePrompt() {
+      const portrait = window.innerHeight > window.innerWidth;
+      rotatePrompt.classList.toggle("show", isLikelyPhone() && portrait);
+    }
+
+    window.addEventListener("resize", updateRotatePrompt);
+    window.addEventListener("orientationchange", updateRotatePrompt);
+    updateRotatePrompt();
+  </script>
+</body>
+</html>
