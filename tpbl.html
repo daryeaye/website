@@ -169,11 +169,13 @@
       background: #000;
     }
 
-    .inline-youtube iframe {
+    .inline-youtube video {
       width: 100%;
       height: 100%;
       display: block;
       border: 0;
+      background: #000;
+      object-fit: contain;
     }
 
     .reveal-card {
@@ -334,13 +336,14 @@
       box-shadow: 0 24px 80px rgba(0, 0, 0, 0.58);
     }
 
-    .video-dialog iframe {
+    .video-dialog video {
       width: 100%;
       height: 100%;
       display: block;
       border: 0;
       border-radius: 14px;
       background: #000;
+      object-fit: contain;
     }
 
     .video-close {
@@ -420,9 +423,17 @@
     }
 
     @media (max-width: 700px) {
-      #videoModal { padding: 14px; }
-      .video-dialog { width: 94vw; }
-      .video-close { top: -13px; right: -8px; }
+      #videoModal { padding: 8px; }
+
+      .video-dialog {
+        width: min(96vw, calc(86vh * 16 / 9));
+        max-height: 86vh;
+      }
+
+      .video-close {
+        top: -8px;
+        right: -2px;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -446,13 +457,15 @@
   <div id="videoModal" role="dialog" aria-modal="true" aria-label="Video player">
     <div class="video-dialog">
       <button class="video-close" id="videoClose" type="button" aria-label="Close video">×</button>
-      <iframe
-        id="modalVideoFrame"
+      <video
+        id="modalVideo"
         title="True PBL video"
-        referrerpolicy="strict-origin-when-cross-origin"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        allowfullscreen>
-      </iframe>
+        controls
+        playsinline
+        preload="none"
+        controlslist="nodownload">
+        Your browser does not support HTML5 video.
+      </video>
     </div>
   </div>
 
@@ -609,27 +622,27 @@
           {
             image: BASE + "62.jpg",
             hotspots: [
-              { ...BOX_1, drive: "https://drive.google.com/file/d/1BbJiG-F6sYNkWtGgbGkeAm3RYmCpiyze/view?usp=drive_link", label: "Play the fraction project video" },
+              { ...BOX_1, video: "https://daryeaye.github.io/website/61A%20Animal.mp4", label: "Play the fraction project video" },
               { ...BOX_2, url: "https://www.teacherspayteachers.com/Product/6th-grade-Project-Multiply-Divide-Fractions-with-DiagramsDigital-Resource-PBL-14541263", label: "View the fraction project on Teachers Pay Teachers" },
-              { ...BOX_3, drive: "https://drive.google.com/file/d/1mBrIdRaaYcgHZagvzjls4J-R70jwmeCi/view?usp=drive_link", label: "Play the coordinate reflection project video" },
+              { ...BOX_3, video: "https://daryeaye.github.io/website/61B%20Spooky.mp4", label: "Play the coordinate reflection project video" },
               { ...BOX_4, url: "https://www.teacherspayteachers.com/Product/6th-grade-Project-Coordinate-Points-Reflection-Halloween-Digital-Resource-PBL-14706709", label: "View the coordinate reflection project on Teachers Pay Teachers" }
             ]
           },
           {
             image: BASE + "63.jpg",
             hotspots: [
-              { ...BOX_1, drive: "https://drive.google.com/file/d/1EgvA1iRTPpA3Tc2MsiYm6_Mr-jCDXV9M/view?usp=drive_link", label: "Play the Dream Room project video" },
+              { ...BOX_1, video: "https://daryeaye.github.io/website/62A%20Dream.mp4", label: "Play the Dream Room project video" },
               { ...BOX_2, url: "https://www.teacherspayteachers.com/Product/6th-grade-Project-Combine-Like-Term-Distributive-PropertyDigital-Resource-PBL-14920870", label: "View the Dream Room project on Teachers Pay Teachers" },
-              { ...BOX_3, drive: "https://drive.google.com/file/d/1LwspIHeNr-b6kohpFEmE1DSmyQqDQd5k/view?usp=drive_link", label: "Play the equation and inequality project video" },
+              { ...BOX_3, video: "https://daryeaye.github.io/website/62B%20Lucky.mp4", label: "Play the equation and inequality project video" },
               { ...BOX_4, url: "https://www.teacherspayteachers.com/Product/6th-grade-Project-Equation-Inequality-Gallery-Walk-Bingo-Digital-Resource-PBL-15244849", label: "View the equation and inequality project on Teachers Pay Teachers" }
             ]
           },
           {
             image: BASE + "64.jpg",
             hotspots: [
-              { ...BOX_1, drive: "https://drive.google.com/file/d/1eVFtn50W1yxXoV7XGFTNX3ksfsR2p-PW/view?usp=drive_link", label: "Play the rate and ratio project video" },
+              { ...BOX_1, video: "https://daryeaye.github.io/website/63A%20Pulse.mp4", label: "Play the rate and ratio project video" },
               { ...BOX_2, url: "https://www.teacherspayteachers.com/Product/6th-grade-Project-Unit-Rate-Ratio-Table-Graph-Activity-PBL-Digital-Resource-15445952", label: "View the rate and ratio project on Teachers Pay Teachers" },
-              { ...BOX_3, drive: "https://drive.google.com/file/d/1BwuXtrZ2FzCMgk-BZg8yUhSzeYfGiRIj/view?usp=drive_link", label: "Play the America Percent Tour video" },
+              { ...BOX_3, video: "https://daryeaye.github.io/website/63B%20Tour.mp4", label: "Play the America Percent Tour video" },
               { ...BOX_4, url: "https://www.teacherspayteachers.com/Product/6th-Grade-Project-Percent-Proportion-USA-States-Fun-FactsDigital-Resource-PBL-16455601", label: "View America Percent Tour on Teachers Pay Teachers" }
             ]
           },
@@ -638,7 +651,7 @@
             hotspots: [
               { ...BOX_1, route: "geotopia", label: "Open the Geotopia page" },
               { ...BOX_2, url: "https://www.teacherspayteachers.com/Product/6th-Grade-Geometry-Project-Bundle-Polygon-Prism-PyramidDigital-Resource-PBL-16496367", label: "View the Grade 6 geometry bundle on Teachers Pay Teachers" },
-              { ...BOX_3, drive: "https://drive.google.com/file/d/1eXVJXIxmaYaObZ-DKFPm9dTd7T960I-O/view?usp=drive_link", label: "Play the statistics and probability project video" },
+              { ...BOX_3, video: "https://daryeaye.github.io/website/64B%20Deli.mp4", label: "Play the statistics and probability project video" },
               { ...BOX_4, url: "https://www.teacherspayteachers.com/Product/6th-Grade-Project-Statistics-and-Probability-Dot-Box-PlotDigital-Resource-PBL-16680557", label: "View the statistics and probability project on Teachers Pay Teachers" }
             ]
           },
@@ -672,34 +685,34 @@
           {
             image: BASE + "72.jpg",
             hotspots: [
-              { ...BOX_1, drive: "https://drive.google.com/file/d/1cFnXLIitshizfPBs7FS6y2KlAz69lbZ7/view?usp=drive_link", label: "Play the integer story project video" },
+              { ...BOX_1, video: "https://daryeaye.github.io/website/71A%20Integers.mp4", label: "Play the integer story project video" },
               { ...BOX_2, url: "https://www.teacherspayteachers.com/Product/7th-Grade-Project-Integer-Rational-Number-Comic-GalleryDigital-Resource-PBL-12255258", label: "View the integer story project on Teachers Pay Teachers" },
-              { ...BOX_3, drive: "https://drive.google.com/file/d/1OwW3k0y8jjQ-kyc7ch-R38oDZbIoCJNh/view?usp=drive_link", label: "Play the proportional relationship project video" },
+              { ...BOX_3, video: "https://daryeaye.github.io/website/71B%20Better%20Buy.mp4", label: "Play the proportional relationship project video" },
               { ...BOX_4, url: "https://www.teacherspayteachers.com/Product/7th-Grade-Project-Proportional-Relationship-Unit-RateDigital-Resource-PBL-12712188", label: "View the proportional relationship project on Teachers Pay Teachers" }
             ]
           },
           {
             image: BASE + "73.jpg",
             hotspots: [
-              { ...BOX_1, drive: "https://drive.google.com/file/d/1fdr9yAyy7J6E6LxHXWvYulKMV33W6aAn/view?usp=drive_link", label: "Play the percent project video" },
+              { ...BOX_1, video: "https://daryeaye.github.io/website/72A%20Retail.mp4", label: "Play the percent project video" },
               { ...BOX_2, url: "https://www.teacherspayteachers.com/Product/7th-Grade-Project-Percent-Increase-Decrease-Markup-downDigital-Resource-PBL-12989557", label: "View the percent project on Teachers Pay Teachers" },
-              { ...BOX_3, drive: "https://drive.google.com/file/d/17g6DynAmo3wJ0zth9-jAx81-KyGJL0DP/view?usp=drive_link", label: "Play the expressions playground project video" },
+              { ...BOX_3, video: "https://daryeaye.github.io/website/72B%20Play.mp4", label: "Play the expressions playground project video" },
               { ...BOX_4, url: "https://www.teacherspayteachers.com/Product/7th-Grade-Project-Distributive-Property-Terms-ExpressionsDigital-Resource-PBL-12381807", label: "View the expressions playground project on Teachers Pay Teachers" }
             ]
           },
           {
             image: BASE + "74.jpg",
             hotspots: [
-              { ...BOX_1, drive: "https://drive.google.com/file/d/1DVdx_mHXrYTyuvanfuGf5RNcj7UefgGR/view?usp=drive_link", label: "Play the equation calendar project video" },
+              { ...BOX_1, video: "https://daryeaye.github.io/website/73A%20Equation%20Cal.mp4", label: "Play the equation calendar project video" },
               { ...BOX_2, url: "https://www.teacherspayteachers.com/Product/7th-Grade-Project-Create-Solve-Equation-Monthly-CalendarDigital-Resource-PBL-12560703", label: "View the equation calendar project on Teachers Pay Teachers" },
-              { ...BOX_3, drive: "https://drive.google.com/file/d/1wTo4DvObvbCbpVt3RIXtuK2-4txczFLD/view?usp=drive_link", label: "Play the statistics project video" },
+              { ...BOX_3, video: "https://daryeaye.github.io/website/73B%20Data.mp4", label: "Play the statistics project video" },
               { ...BOX_4, url: "https://www.teacherspayteachers.com/Product/7th-Grade-Project-Statistics-Mean-Median-Mode-Box-PlotDigital-Resource-PBL-13156166", label: "View the statistics project on Teachers Pay Teachers" }
             ]
           },
           {
             image: BASE + "75.jpg",
             hotspots: [
-              { ...BOX_1, drive: "https://drive.google.com/file/d/1ExgszE3q3sZz0XspqBu0WLPA4dhWmxRL/view?usp=drive_link", label: "Play the probability project video" },
+              { ...BOX_1, video: "https://daryeaye.github.io/website/74A%20Game.mp4", label: "Play the probability project video" },
               { ...BOX_2, url: "https://www.teacherspayteachers.com/Product/7th-Grade-Project-Simple-Compound-Probability-SampleSpaceDigital-Resource-PBL-13354135", label: "View the probability project on Teachers Pay Teachers" },
               { ...BOX_3, route: "geotopia", label: "Open the Geotopia page" },
               { ...BOX_4, url: "https://www.teacherspayteachers.com/Product/7th-Grade-Geometry-Project-Bundle-Polygon-Prism-PyramidDigital-Resource-PBL-11961954", label: "View the Grade 7 geometry bundle on Teachers Pay Teachers" }
@@ -734,7 +747,7 @@
           },
           {
             image: BASE + "g2.jpg",
-            inlineDrive: { ...SHARED_VIDEO_BOX, drive: "https://drive.google.com/file/d/1MxWwMr0lulxmR1KvJSc6bssHsjAQvhkn/view?usp=drive_link" },
+            inlineVideo: { ...SHARED_VIDEO_BOX, video: "https://daryeaye.github.io/website/64A%20Power.mp4" },
             hotspots: [
               { x: 435, y: 929, w: 1059, h: 122, url: "https://www.teacherspayteachers.com/Product/7th-Grade-Geometry-Project-Bundle-Polygon-Prism-PyramidDigital-Resource-PBL-11961954", label: "View the Geotopia bundle on Teachers Pay Teachers" }
             ]
@@ -751,7 +764,7 @@
           },
           {
             image: BASE + "g4.jpg",
-            inlineDrive: { ...SHARED_VIDEO_BOX, drive: "https://drive.google.com/file/d/1nkfqdOgbe6z-aTNQv0JI3z95IOy3BDXU/view?usp=drive_link" },
+            inlineVideo: { ...SHARED_VIDEO_BOX, video: "https://daryeaye.github.io/website/74B%20Lost%20T.mp4" },
             hotspots: [
               { x: 435, y: 929, w: 1059, h: 122, url: "https://www.teacherspayteachers.com/Product/7th-Grade-Geometry-Project-Bundle-Polygon-Prism-PyramidDigital-Resource-PBL-11961954", label: "View the Geotopia Grade 7 bundle on Teachers Pay Teachers" }
             ]
@@ -816,7 +829,7 @@
             hotspots: [
               {
                 ...TOOL_BOX_C,
-                drive: "https://drive.google.com/file/d/1VLI2fDgaENJkoqlvEWgSaGQrBGGqRk1l/view?usp=drive_link",
+                video: "https://daryeaye.github.io/website/Boards.mp4",
                 label: "Play the Boards Up game video"
               },
               {
@@ -836,7 +849,7 @@
             hotspots: [
               {
                 ...TOOL_BOX_C,
-                drive: "https://drive.google.com/file/d/1KjILVGMGfiupm5Ph0VEn-oM-NPxhfI7h/view?usp=drive_link",
+                video: "https://daryeaye.github.io/website/Tic.mp4",
                 label: "Play the Tic-Tac-Toe game video"
               },
               {
@@ -856,7 +869,7 @@
             hotspots: [
               {
                 ...TOOL_BOX_A,
-                drive: "https://drive.google.com/file/d/1FykQ2uRnktVYpuXza0Bka3sbrllpqNqM/view?usp=drive_link",
+                video: "https://daryeaye.github.io/website/Among.mp4",
                 label: "Play the Among Us classroom game video"
               },
               {
@@ -871,7 +884,7 @@
             hotspots: [
               {
                 ...TOOL_BOX_A,
-                drive: "https://drive.google.com/file/d/1vzDhHzbljdTaIXIDhAvjEszdzLrmaa1R/view?usp=drive_link",
+                video: "https://daryeaye.github.io/website/Sticker.mp4",
                 label: "Play the digital sticker collection video"
               },
               {
@@ -970,7 +983,7 @@
     const pageRoot = document.getElementById("pageRoot");
     const pageFade = document.getElementById("pageFade");
     const videoModal = document.getElementById("videoModal");
-    const modalVideoFrame = document.getElementById("modalVideoFrame");
+    const modalVideo = document.getElementById("modalVideo");
     const videoClose = document.getElementById("videoClose");
     const rotatePrompt = document.getElementById("rotatePrompt");
 
@@ -1053,30 +1066,15 @@
       return `https://www.youtube.com/embed/${id}?${params.toString()}`;
     }
 
-    function googleDriveFileId(url) {
-      const match = String(url).match(/\/file\/d\/([^/]+)/);
-      return match ? match[1] : "";
-    }
-
-    function googleDriveEmbedUrl(url) {
-      const fileId = googleDriveFileId(url);
-      return `https://drive.google.com/file/d/${fileId}/preview`;
-    }
-
-    function modalEmbedUrl(url) {
-      return String(url).includes("drive.google.com")
-        ? googleDriveEmbedUrl(url)
-        : youtubeEmbedUrl(url, true);
-    }
 
     function createHotspot(item) {
       let element;
 
-      if (item.drive || item.youtube) {
+      if (item.video) {
         element = document.createElement("button");
         element.type = "button";
         element.className = "video-button";
-        element.addEventListener("click", () => openVideoModal(item.drive || item.youtube));
+        element.addEventListener("click", () => openVideoModal(item.video));
       } else {
         element = document.createElement("a");
         element.className = "hotspot";
@@ -1164,23 +1162,19 @@
         stage.appendChild(video);
       }
 
-      const inlinePlayer = section.inlineDrive || section.inlineYoutube;
-
-      if (inlinePlayer) {
+      if (section.inlineVideo) {
         const playerWindow = document.createElement("div");
         playerWindow.className = "inline-youtube";
-        place(playerWindow, inlinePlayer);
+        place(playerWindow, section.inlineVideo);
 
-        const iframe = document.createElement("iframe");
-        iframe.src = section.inlineDrive
-          ? googleDriveEmbedUrl(inlinePlayer.drive)
-          : youtubeEmbedUrl(inlinePlayer.youtube, false);
-        iframe.title = `${pageName} video`;
-        iframe.loading = "lazy";
-        iframe.referrerPolicy = "strict-origin-when-cross-origin";
-        iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
-        iframe.allowFullscreen = true;
-        playerWindow.appendChild(iframe);
+        const video = document.createElement("video");
+        video.src = section.inlineVideo.video;
+        video.title = `${pageName} video`;
+        video.controls = true;
+        video.playsInline = true;
+        video.preload = "none";
+        video.setAttribute("controlsList", "nodownload");
+        playerWindow.appendChild(video);
         stage.appendChild(playerWindow);
       }
 
@@ -1255,7 +1249,9 @@
     function closeVideoModal() {
       if (!videoModal.classList.contains("open")) return;
       videoModal.classList.remove("open");
-      modalVideoFrame.src = "";
+      modalVideo.pause();
+      modalVideo.removeAttribute("src");
+      modalVideo.load();
       document.body.style.overflow = "";
     }
 
@@ -1344,9 +1340,11 @@
     showRoute(initialRoute());
 
     function openVideoModal(videoUrl) {
-      modalVideoFrame.src = modalEmbedUrl(videoUrl);
+      modalVideo.src = videoUrl;
+      modalVideo.load();
       videoModal.classList.add("open");
       document.body.style.overflow = "hidden";
+      modalVideo.play().catch(() => {});
       videoClose.focus();
     }
 
