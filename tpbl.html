@@ -176,8 +176,8 @@
       border: 0;
     }
 
-    .reveal-card { 
-      overflow: hidden; 
+    .reveal-card {
+      overflow: hidden;
       border-radius: 0;
     }
 
@@ -190,6 +190,7 @@
       width: 100%;
       height: 100%;
       display: block;
+      border-radius: 0;
       object-fit: cover;
       opacity: 0;
       transform: translateY(105%);
@@ -198,7 +199,6 @@
         opacity 150ms ease-out;
       pointer-events: none;
       user-select: none;
-      border-radius: 0;
     }
 
     .reveal-card:hover .reveal-image,
@@ -552,8 +552,36 @@
           {
             image: BASE + "p8.jpg",
             hotspots: [
-              { x: 65, y: 873, w: 820, h: 123, route: "games", label: "Explore all games and tools" },
-              { x: 1027, y: 873, w: 821, h: 123, url: "https://www.teacherspayteachers.com/store/true-pbl/category-ultimate-engagement-pack-1365582", label: "View the Ultimate Engagement Pack on Teachers Pay Teachers" }
+              {
+                x: 66, y: 815, w: 820, h: 121,
+                route: "games",
+                label: "Open Games and Tools"
+              },
+              {
+                x: 1020, y: 815, w: 820, h: 121,
+                url: "https://www.teacherspayteachers.com/store/true-pbl/category-ultimate-engagement-pack-1365582",
+                label: "View the Ultimate Engagement Pack on Teachers Pay Teachers"
+              },
+              {
+                x: 88, y: 980, w: 331, h: 62,
+                route: "grade6",
+                label: "Open Grade 6 Projects"
+              },
+              {
+                x: 554, y: 980, w: 331, h: 62,
+                route: "grade7",
+                label: "Open Grade 7 Projects"
+              },
+              {
+                x: 1020, y: 980, w: 332, h: 62,
+                route: "geotopia",
+                label: "Open Geotopia"
+              },
+              {
+                x: 1486, y: 980, w: 331, h: 62,
+                route: "about",
+                label: "Open About Me"
+              }
             ],
             reveals: [
               { x: 65, y: 238, w: 532, h: 532, image: BASE + "f7.jpg", label: "Show game preview 1" },
